@@ -109,3 +109,7 @@ typings/
 # dotenv environment variables file
 
 .env
+
+#config file
+
+config.js

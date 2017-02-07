@@ -111,4 +111,4 @@ typings/
 .env
 
 #config file
-
+config.js

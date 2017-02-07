@@ -66,7 +66,7 @@ function request_Signin(cookie_set) {
 // 模擬 簽退
 function request_leave(cookie_set) {
 	var post_set=set_loginPostInfo();
-	var url=urlInfo.index + '/ ' + urlInfo.sign '?act=leave&id=1902';
+	var url=urlInfo.index + '/' + urlInfo.sign + '?act=leave&id=1902';
     requestModule.get(url).set(headers).set('Cookie', cookie_set).redirects(0).end(function (error, result) {
         if (error) {
             var info = '模擬 簽退 出错啦,可能网络有问题.' + error;

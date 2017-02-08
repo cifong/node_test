@@ -2,6 +2,14 @@ var accounts = require('./config').accounts;
 var urlInfo = require('./config').urlInfo;
 var requestModule = require('superagent');
 var headers=set_header();
+switch(process.argv[2]){
+	case 'login':
+		var actflg='login';
+		break;
+	case 'leave':
+	default:
+		var actflg='leave';
+}
 // 設定 request header
 function set_header(){
 	var headers = {
@@ -66,7 +74,7 @@ function request_Signin(cookie_set) {
 // 模擬 簽退
 function request_leave(cookie_set) {
 	var post_set=set_loginPostInfo();
-	var url=urlInfo.index + '/' + urlInfo.sign + '?act=leave&id=1902';
+	var url=urlInfo.index + '/' + urlInfo.sign + '?act=leave&id=1920';
     requestModule.get(url).set(headers).set('Cookie', cookie_set).redirects(0).end(function (error, result) {
         if (error) {
             var info = '模擬 簽退 出错啦,可能网络有问题.' + error;
@@ -78,6 +86,25 @@ function request_leave(cookie_set) {
 				console.log('簽退成功');
 			}else{
 				console.log('簽退失敗');
+			}
+        }
+    });
+}
+// 模擬 簽到
+function request_login(cookie_set) {
+	var post_set=set_loginPostInfo();
+	var url=urlInfo.index + '/' + urlInfo.sign + '?act=login';
+    requestModule.get(url).set(headers).set('Cookie', cookie_set).redirects(0).end(function (error, result) {
+        if (error) {
+            var info = '模擬 簽到 出错啦,可能网络有问题.' + error;
+            console.log(info);
+        } else {
+			var retstatus=result.status;
+			// console.log(retstatus);
+			if(200==retstatus){
+				console.log('簽到成功');
+			}else{
+				console.log('簽到失敗');
 			}
         }
     });

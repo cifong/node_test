@@ -1,6 +1,7 @@
 var accounts = require('./config').accounts;
 var urlInfo = require('./config').urlInfo;
 var requestModule = require('superagent');
+var cheerio = require('cheerio');
 var headers=set_header();
 switch(process.argv[2]){
 	case 'login':
@@ -64,9 +65,54 @@ function request_Signin(cookie_set) {
 			var rettext=result.text;
 			// console.log(rettext);
 			if(rettext.indexOf('main.php?ok=1')!=-1){
-				request_leave(cookie_set);
+				request_sign_pageInfo(cookie_set);
 			}else{
 				console.log('登入失敗');
+			}
+        }
+    });
+}
+// 登入之後動作 // 抓取簽到頁面資訊 // 執行簽到 // 簽退
+function request_sign_pageInfo(cookie_set){
+	var url=urlInfo.index + '/' + urlInfo.sign;
+	requestModule.get(url).set(headers).set('Cookie', cookie_set).redirects(0).end(function (error, result) {
+        if (error) {
+            var info = '抓取簽到頁面資訊 出错啦,可能网络有问题.' + error;
+            console.log(info);
+        } else {
+			var $ = cheerio.load(result.text);
+			var acturl='';
+			var srh_string='/'+urlInfo.sign+'?act='+actflg;
+			$('table.text11 tr#MainMenu td a').each(function(i, elem){
+				if('#'==$(this).attr("href") || $(this).attr("href").indexOf(srh_string)==-1){return;}
+				// console.log($(this).attr("href"));
+				acturl=$(this).attr("href");
+				return false;
+			});
+			if(0<acturl.length){
+				// console.log('抓取資料成功');
+				request_login_ctl(cookie_set,acturl);				
+			}else{
+				console.log('抓取資料失敗');
+			}
+        }
+    });
+}
+// 控制簽到簽退  連到 抓回來 通過資訊的連結
+function request_login_ctl(cookie_set,acturl) {
+	var post_set=set_loginPostInfo();
+	var url=urlInfo.index + acturl;
+    requestModule.get(url).set(headers).set('Cookie', cookie_set).redirects(0).end(function (error, result) {
+        if (error) {
+            var info = actflg + 'act 出错啦,可能网络有问题.' + error;
+            console.log(info);
+        } else {
+			var retstatus=result.status;
+			// console.log(retstatus);
+			if(200==retstatus){
+				console.log(actflg + 'act 成功');
+			}else{
+				console.log(actflg + 'act 失敗');
 			}
         }
     });
@@ -74,7 +120,7 @@ function request_Signin(cookie_set) {
 // 模擬 簽退
 function request_leave(cookie_set) {
 	var post_set=set_loginPostInfo();
-	var url=urlInfo.index + '/' + urlInfo.sign + '?act=leave&id=1920';
+	var url=urlInfo.index + '/' + urlInfo.sign + '?act=leave&id=1938';
     requestModule.get(url).set(headers).set('Cookie', cookie_set).redirects(0).end(function (error, result) {
         if (error) {
             var info = '模擬 簽退 出错啦,可能网络有问题.' + error;

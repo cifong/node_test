@@ -10,4 +10,4 @@ cheerio   Node.js 版的 jquery，用来从网页中以 css selector 取数据�
 3.安装依赖 npm install --save PACKAGE_NAME
 4.修改 config 內容 
 5.修改 bat 檔內容路徑為檔案路徑
-6.如果要開機就自動登入 可以把bat 檔案 放進 C:\Users\你的使用者名稱\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup 自料夾即可
+6.如果要開機就自動登入 可以把bat 檔案 放進 C:\Users\你的使用者名稱\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup 資料夾即可
